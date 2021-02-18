@@ -18,6 +18,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static com.ml.HotelApi.util.DateFormat.dateFormat;
+
 @Repository
 public class JsonHotelRepository implements IHotelRepository {
     private final static String db = "hotels.json";
@@ -51,8 +53,8 @@ public class JsonHotelRepository implements IHotelRepository {
         List<HotelDTO> hotelList = new ArrayList<>();
         for (HotelJSONDTO jsonDto:list) {
             try {
-                Date dateFrom = new SimpleDateFormat("dd/MM/yyyy").parse(jsonDto.getAvailableSince());
-                Date dateTo = new SimpleDateFormat("dd/MM/yyyy").parse(jsonDto.getAvailableUntil());
+                Date dateFrom = new SimpleDateFormat(dateFormat).parse(jsonDto.getAvailableSince());
+                Date dateTo = new SimpleDateFormat(dateFormat).parse(jsonDto.getAvailableUntil());
                 HotelDTO hotel = new HotelDTO(jsonDto.getCode(), jsonDto.getName(), jsonDto.getCity(),
                         jsonDto.getRoomType(), jsonDto.isBooked(),dateFrom,dateTo, jsonDto.getPrice());
                 hotelList.add(hotel);

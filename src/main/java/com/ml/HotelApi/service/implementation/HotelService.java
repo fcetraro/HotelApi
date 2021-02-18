@@ -11,12 +11,14 @@ import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 
+import static com.ml.HotelApi.util.DateFormat.dateFormat;
+import static com.ml.HotelApi.util.Validator.validateDestination;
+import static com.ml.HotelApi.util.Validator.validateRangeDates;
 import static java.util.stream.Collectors.toList;
 
 @Service
@@ -28,38 +30,34 @@ public class HotelService implements IHotelService {
         this.hotels = hotelRepository;
     }
 
+    private static String provinceKey = "destination";
+
     private List<HotelDTO> applyFilters(List<HotelDTO> hotels, Map<String, String> filter){
         HotelPredicate filters = new HotelPredicate();
         Predicate<HotelDTO> predicate = filters.getCombinedPredicateFromDTO(filter);
         return hotels.stream().filter(predicate).collect(toList());
     }
-    private boolean isDestinationValid(String destination){
-        for (HotelDTO hotel:hotels.getAll()) {
-            if(hotel.getCity().equals(destination)) return true;
-        }
-        return false;
-    }
     private void validateFilters(Map<String, String> filters){
         if(filters!=null) {
-            if (filters.containsKey("destination")) {
-                if(!isDestinationValid(filters.get("destination"))){
-                    throw new ProvinceNotFoundException(filters.get("destination"),new Exception("Province not found"));
-                }
+            if (filters.containsKey(provinceKey)) {
+                validateDestination(filters.get(provinceKey),hotels.getAll());
             }
-            if (filters.containsKey("dateTo")&&filters.containsKey("dateFrom")) {
-                try{
-                    Date dateFrom = new SimpleDateFormat("dd/MM/yyyy").parse(filters.get("dateFrom"));
-                    Date dateTo = new SimpleDateFormat("dd/MM/yyyy").parse(filters.get("dateTo"));
-                    if(dateFrom.after(dateTo)){
-                        throw new DatesNotValidException(new Exception());
-                    }
-                } catch (ParseException e) {
-                    throw new DatesNotValidException(e);
-                }
-
+            if (filters.containsKey("dateTo") && filters.containsKey("dateFrom")) {
+                validateDates(filters);
             }
         }
     }
+
+    private void validateDates(Map<String, String> filters){
+        try{
+            Date dateFrom = new SimpleDateFormat(dateFormat).parse(filters.get("dateFrom"));
+            Date dateTo = new SimpleDateFormat(dateFormat).parse(filters.get("dateTo"));
+            validateRangeDates(dateFrom, dateTo);
+        } catch (ParseException e) {
+            throw new DatesNotValidException(e);
+        }
+    }
+
     @Override
     public List<HotelDTO> get(Map<String, String> filters) {
         validateFilters(filters);
