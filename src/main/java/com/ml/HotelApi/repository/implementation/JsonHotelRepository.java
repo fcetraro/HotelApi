@@ -2,7 +2,7 @@ package com.ml.HotelApi.repository.implementation;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ml.HotelApi.exception.implementation.DatesNotValidException;
+import com.ml.HotelApi.exception.implementation.NotValidDateException;
 import com.ml.HotelApi.model.HotelDTO;
 import com.ml.HotelApi.model.HotelJSONDTO;
 import com.ml.HotelApi.repository.IHotelRepository;
@@ -17,6 +17,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import static com.ml.HotelApi.util.DateFormat.dateFormat;
 
@@ -56,10 +57,11 @@ public class JsonHotelRepository implements IHotelRepository {
                 Date dateFrom = new SimpleDateFormat(dateFormat).parse(jsonDto.getAvailableSince());
                 Date dateTo = new SimpleDateFormat(dateFormat).parse(jsonDto.getAvailableUntil());
                 HotelDTO hotel = new HotelDTO(jsonDto.getCode(), jsonDto.getName(), jsonDto.getCity(),
-                        jsonDto.getRoomType(), jsonDto.isBooked(),dateFrom,dateTo, jsonDto.getPrice());
+                        jsonDto.getRoomType().toUpperCase(Locale.ROOT), jsonDto.isBooked(),dateFrom,dateTo,
+                        jsonDto.getPrice());
                 hotelList.add(hotel);
             } catch (ParseException e){
-                throw new DatesNotValidException(e);
+                throw new NotValidDateException(e);
             }
         }
         return hotelList;

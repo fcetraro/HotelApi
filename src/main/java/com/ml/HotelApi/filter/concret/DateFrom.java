@@ -1,6 +1,6 @@
 package com.ml.HotelApi.filter.concret;
 
-import com.ml.HotelApi.exception.implementation.DatesNotValidException;
+import com.ml.HotelApi.exception.implementation.NotValidDateException;
 import com.ml.HotelApi.filter.HotelFilter;
 import com.ml.HotelApi.model.HotelDTO;
 
@@ -29,7 +29,7 @@ public class DateFrom extends HotelFilter {
         try {
             dateFrom = new SimpleDateFormat(dateFormat).parse(value);
         } catch (ParseException e){
-            throw new DatesNotValidException(e);
+            throw new NotValidDateException(e);
         }
     }
 }

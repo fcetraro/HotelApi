@@ -1,7 +1,5 @@
 package com.ml.HotelApi.service.implementation;
 
-import com.ml.HotelApi.exception.implementation.DatesNotValidException;
-import com.ml.HotelApi.exception.implementation.ProvinceNotFoundException;
 import com.ml.HotelApi.filter.HotelPredicate;
 import com.ml.HotelApi.model.HotelDTO;
 import com.ml.HotelApi.repository.IHotelRepository;
@@ -9,16 +7,12 @@ import com.ml.HotelApi.service.IHotelService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 
-import static com.ml.HotelApi.util.DateFormat.dateFormat;
 import static com.ml.HotelApi.util.Validator.validateDestination;
-import static com.ml.HotelApi.util.Validator.validateRangeDates;
+import static com.ml.HotelApi.util.Validator.validateDatesString;
 import static java.util.stream.Collectors.toList;
 
 @Service
@@ -49,13 +43,7 @@ public class HotelService implements IHotelService {
     }
 
     private void validateDates(Map<String, String> filters){
-        try{
-            Date dateFrom = new SimpleDateFormat(dateFormat).parse(filters.get("dateFrom"));
-            Date dateTo = new SimpleDateFormat(dateFormat).parse(filters.get("dateTo"));
-            validateRangeDates(dateFrom, dateTo);
-        } catch (ParseException e) {
-            throw new DatesNotValidException(e);
-        }
+        validateDatesString(filters.get("dateFrom"),filters.get("dateTo"));
     }
 
     @Override
