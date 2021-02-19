@@ -1,8 +1,6 @@
 package com.ml.HotelApi.filter;
 
-import com.ml.HotelApi.filter.concret.DateFrom;
-import com.ml.HotelApi.filter.concret.DateTo;
-import com.ml.HotelApi.filter.concret.Destination;
+import com.ml.HotelApi.filter.concret.*;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -45,6 +43,8 @@ public class FMHotelFilter {
         allFilters.add(new DateFrom());
         allFilters.add(new DateTo());
         allFilters.add(new Destination());
+        allFilters.add(new RoomType());
+        allFilters.add(new Code());
         return allFilters;
     }
 }

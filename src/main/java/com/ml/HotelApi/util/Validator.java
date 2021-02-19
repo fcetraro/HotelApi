@@ -12,7 +12,7 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.ml.HotelApi.util.DateFormat.dateFormat;
+import static com.ml.HotelApi.util.DateFormat.DATE_FORMAT;
 import static com.ml.HotelApi.util.RoomTypeConvertor.getRoomTypeByPeopleAmount;
 
 public class Validator {
@@ -35,8 +35,8 @@ public class Validator {
     }
     public static void validateDatesString(String dateFromString, String dateToString) {
         try{
-            Date dateFrom = new SimpleDateFormat(dateFormat).parse(dateFromString);
-            Date dateTo = new SimpleDateFormat(dateFormat).parse(dateToString);
+            Date dateFrom = new SimpleDateFormat(DATE_FORMAT).parse(dateFromString);
+            Date dateTo = new SimpleDateFormat(DATE_FORMAT).parse(dateToString);
             validateRangeDates(dateFrom, dateTo);
         } catch (ParseException e) {
             throw new NotValidDateException(e);
@@ -54,9 +54,9 @@ public class Validator {
         }
     }
     private static void validateCreditCard(PaymentMethodDTO method){
-        if(method.getDues()>0) {
+        if(method.getDues()<=0) {
             throw new NotValidPaymentMethodException(new Exception("Se ha ingresado una cantidad de " +
-                    "cuotas igual a 0."));
+                    "cuotas igual o menor a 0."));
         }
     }
     private static void validateDebitCard(PaymentMethodDTO method){

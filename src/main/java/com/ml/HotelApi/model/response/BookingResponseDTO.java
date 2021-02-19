@@ -1,11 +1,12 @@
 package com.ml.HotelApi.model.response;
 
+import com.ml.HotelApi.model.BookingDTO;
 import com.ml.HotelApi.model.request.NewBookingDTO;
 
 public class BookingResponseDTO {
     String userName;
     double amount, interest, total;
-    NewBookingDTO booking;
+    BookingDTO booking;
     StatusCode statusCode;
 
     public String getUserName() {
@@ -40,11 +41,11 @@ public class BookingResponseDTO {
         this.total = total;
     }
 
-    public NewBookingDTO getBooking() {
+    public BookingDTO getBooking() {
         return booking;
     }
 
-    public void setBooking(NewBookingDTO booking) {
+    public void setBooking(BookingDTO booking) {
         this.booking = booking;
     }
 

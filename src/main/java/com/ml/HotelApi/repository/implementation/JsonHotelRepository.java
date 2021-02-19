@@ -19,7 +19,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import static com.ml.HotelApi.util.DateFormat.dateFormat;
+import static com.ml.HotelApi.util.DateFormat.DATE_FORMAT;
 
 @Repository
 public class JsonHotelRepository implements IHotelRepository {
@@ -54,8 +54,8 @@ public class JsonHotelRepository implements IHotelRepository {
         List<HotelDTO> hotelList = new ArrayList<>();
         for (HotelJSONDTO jsonDto:list) {
             try {
-                Date dateFrom = new SimpleDateFormat(dateFormat).parse(jsonDto.getAvailableSince());
-                Date dateTo = new SimpleDateFormat(dateFormat).parse(jsonDto.getAvailableUntil());
+                Date dateFrom = new SimpleDateFormat(DATE_FORMAT).parse(jsonDto.getAvailableSince());
+                Date dateTo = new SimpleDateFormat(DATE_FORMAT).parse(jsonDto.getAvailableUntil());
                 HotelDTO hotel = new HotelDTO(jsonDto.getCode(), jsonDto.getName(), jsonDto.getCity(),
                         jsonDto.getRoomType().toUpperCase(Locale.ROOT), jsonDto.isBooked(),dateFrom,dateTo,
                         jsonDto.getPrice());

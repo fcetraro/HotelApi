@@ -9,7 +9,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.function.Predicate;
 
-import static com.ml.HotelApi.util.DateFormat.dateFormat;
+import static com.ml.HotelApi.util.DateFormat.DATE_FORMAT;
 
 public class DateTo extends HotelFilter {
     Date dateTo;
@@ -27,7 +27,7 @@ public class DateTo extends HotelFilter {
     @Override
     public void setValue(String value){
         try {
-            dateTo = new SimpleDateFormat(dateFormat).parse(value);
+            dateTo = new SimpleDateFormat(DATE_FORMAT).parse(value);
         } catch (ParseException e){
             throw new NotValidDateException(e);
         }
