@@ -45,6 +45,7 @@ public class FMHotelFilter {
         allFilters.add(new Destination());
         allFilters.add(new RoomType());
         allFilters.add(new Code());
+        allFilters.add(new Booked());
         return allFilters;
     }
 }

@@ -7,4 +7,5 @@ import java.util.Map;
 
 public interface IHotelService {
     List<HotelDTO> get(Map<String,String> map);
+    void modifyAvailability(Map<String,String> filter, Map<String,String> map);
 }

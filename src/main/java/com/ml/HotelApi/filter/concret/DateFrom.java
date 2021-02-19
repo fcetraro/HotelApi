@@ -16,7 +16,7 @@ public class DateFrom extends HotelFilter {
 
     @Override
     public Predicate<HotelDTO> getPredicate() {
-        return w -> w.getAvailableSince().before(dateFrom);
+        return w -> w.getAvailableSince().before(dateFrom) || w.getAvailableSince().equals(dateFrom);
     }
 
     @Override

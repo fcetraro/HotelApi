@@ -72,5 +72,11 @@ public class JsonHotelRepository implements IHotelRepository {
         loadInitialArticles();
         return hotels;
     }
+
+    @Override
+    public void add(HotelDTO hotel) {
+        loadInitialArticles();
+        hotels.add(hotel);
+    }
 }
 

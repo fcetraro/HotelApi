@@ -6,4 +6,5 @@ import java.util.List;
 
 public interface IHotelRepository {
     List<HotelDTO> getAll();
+    void add(HotelDTO hotel);
 }

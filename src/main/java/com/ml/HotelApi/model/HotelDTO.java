@@ -4,7 +4,7 @@ import java.util.Date;
 
 public class HotelDTO {
     String code, name, city, roomType;
-    boolean booked;
+    Boolean booked;
     Date availableSince, availableUntil;
     int price;
 

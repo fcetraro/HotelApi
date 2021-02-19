@@ -1,9 +1,7 @@
 package com.ml.HotelApi.service.implementation;
 
 import com.ml.HotelApi.filter.HotelFilter;
-import com.ml.HotelApi.filter.concret.Code;
-import com.ml.HotelApi.filter.concret.Destination;
-import com.ml.HotelApi.filter.concret.RoomType;
+import com.ml.HotelApi.filter.concret.*;
 import com.ml.HotelApi.model.BookingDTO;
 import com.ml.HotelApi.model.HotelDTO;
 import com.ml.HotelApi.model.request.FullNewBookingDTO;
@@ -37,20 +35,33 @@ public class BookingService implements IBookingService {
         filters.put(destinationFilter.getFilterName(),booking.getDestination());
         HotelFilter codeFilter = new Code();
         filters.put(codeFilter.getFilterName(),booking.getHotelCode());
+        HotelFilter dateFrom = new DateFrom();
+        filters.put(dateFrom.getFilterName(),booking.getDateFrom());
+        HotelFilter dateTo = new DateTo();
+        filters.put(dateTo.getFilterName(),booking.getDateTo());
+        HotelFilter booked = new Booked();
+        filters.put(booked.getFilterName(),"false");
         return filters;
     }
     @Override
     public BookingResponseDTO book(FullNewBookingDTO booking) {
         verifyBooking(booking);
-        return getBookingResponseDTO(booking);
+        return makeBooking(booking);
     }
 
-    private BookingResponseDTO getBookingResponseDTO(FullNewBookingDTO booking) {
+    private BookingResponseDTO makeBooking(FullNewBookingDTO booking) {
         BookingResponseDTO bookingResponse = new BookingResponseDTO();
-        List<HotelDTO> hotelsFit = hotelService.get(getFiltersForBooking(booking.getBooking()));
-        if(hotelsFit.size()!=0){
+        Map<String, String> filters = getFiltersForBooking(booking.getBooking());
+        List<HotelDTO> hotelsFit = hotelService.get(filters);
+        HotelFilter booked = new Booked();
+        filters = getFiltersForBooking(booking.getBooking());
+        filters.replace(booked.getFilterName(),"true");
+        List<HotelDTO> bookedHotel = hotelService.get(filters);
+        if(hotelsFit.size()!=0 && bookedHotel.size() <= 0){
             HotelDTO bookingHotel = hotelsFit.get(0);
             bookingResponse = setValues(booking, bookingResponse, bookingHotel);
+            hotelService.modifyAvailability(getFiltersForBooking(booking.getBooking())
+                    ,getFiltersForBooking(booking.getBooking()));
             bookingResponse.setStatusCode(getOkBookingStatusCode());
         } else {
             bookingResponse.setStatusCode(getHotelNotFoundForBookingStatusCode());
