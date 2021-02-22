@@ -44,7 +44,7 @@ public class JsonHotelRepository implements IHotelRepository {
         return hotelsFromJson;
     }
 
-    private void loadInitialArticles(){
+    private void loadInitialHotels(){
         if (hotels==null){
             hotels = parseFromJson(loadFromFile());
         }
@@ -69,13 +69,13 @@ public class JsonHotelRepository implements IHotelRepository {
 
     @Override
     public List<HotelDTO> getAll() {
-        loadInitialArticles();
+        loadInitialHotels();
         return hotels;
     }
 
     @Override
     public void add(HotelDTO hotel) {
-        loadInitialArticles();
+        loadInitialHotels();
         hotels.add(hotel);
     }
 }
