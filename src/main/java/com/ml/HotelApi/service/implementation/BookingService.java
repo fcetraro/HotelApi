@@ -52,11 +52,11 @@ public class BookingService implements IBookingService {
     private BookingResponseDTO makeBooking(FullNewBookingDTO booking) {
         BookingResponseDTO bookingResponse = new BookingResponseDTO();
         Map<String, String> filters = getFiltersForBooking(booking.getBooking());
-        List<HotelDTO> hotelsFit = hotelService.get(filters);
+        List<HotelDTO> hotelsFit = hotelService.getDTOS(filters);
         HotelFilter booked = new Booked();
         filters = getFiltersForBooking(booking.getBooking());
         filters.replace(booked.getFilterName(),"true");
-        List<HotelDTO> bookedHotel = hotelService.get(filters);
+        List<HotelDTO> bookedHotel = hotelService.getDTOS(filters);
         if(hotelsFit.size()!=0 && bookedHotel.size() <= 0){
             HotelDTO bookingHotel = hotelsFit.get(0);
             bookingResponse = setValues(booking, bookingResponse, bookingHotel);
@@ -104,7 +104,7 @@ public class BookingService implements IBookingService {
 
     private void verifyBooking(FullNewBookingDTO booking) {
         validateDatesString(booking.getBooking().getDateFrom(),booking.getBooking().getDateTo());
-        validateDestination(booking.getBooking().getDestination(), hotelService.get(new HashMap<>()));
+        validateDestination(booking.getBooking().getDestination(), hotelService.getDTOS(new HashMap<>()));
         validateEmail(booking.getUserName());
         validatePeopleRoomType(booking.getBooking().getPeopleAmount(), booking.getBooking().getRoomType());
         validatePaymentMethod(booking.getBooking().getPaymentMethod());

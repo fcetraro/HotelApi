@@ -1,6 +1,7 @@
 package com.ml.HotelApi.controller;
 
 import com.ml.HotelApi.model.HotelDTO;
+import com.ml.HotelApi.model.response.HotelResponseDTO;
 import com.ml.HotelApi.service.IHotelService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -16,7 +17,7 @@ public class HotelController {
         this.service = service;
     }
     @GetMapping("")
-    public List<HotelDTO> getHotels(@RequestParam(required = false) Map<String, String> queryMap){
+    public List<HotelResponseDTO> getHotels(@RequestParam(required = false) Map<String, String> queryMap){
         return service.get(queryMap);
     }
 }

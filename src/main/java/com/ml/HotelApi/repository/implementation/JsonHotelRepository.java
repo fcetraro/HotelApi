@@ -3,6 +3,8 @@ package com.ml.HotelApi.repository.implementation;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ml.HotelApi.exception.implementation.NotValidDateException;
+import com.ml.HotelApi.model.Availability;
+import com.ml.HotelApi.model.Hotel;
 import com.ml.HotelApi.model.HotelDTO;
 import com.ml.HotelApi.model.HotelJSONDTO;
 import com.ml.HotelApi.repository.IHotelRepository;
@@ -24,7 +26,8 @@ import static com.ml.HotelApi.util.DateFormat.DATE_FORMAT;
 @Repository
 public class JsonHotelRepository implements IHotelRepository {
     private final static String db = "hotels.json";
-    private static List<HotelDTO> hotels;
+    private static List<Hotel> hotels;
+    private static List<Availability> availabilities;
 
     private List<HotelJSONDTO> loadFromFile() {
         File file = null;
@@ -46,8 +49,65 @@ public class JsonHotelRepository implements IHotelRepository {
 
     private void loadInitialHotels(){
         if (hotels==null){
-            hotels = parseFromJson(loadFromFile());
+            List<HotelDTO> hotelDTOS = parseFromJson(loadFromFile());
+            hotels=parseHotelFromDTO(hotelDTOS);
+            availabilities=parseAvailabilityFromDTO(hotelDTOS);
         }
+    }
+
+    private List<Hotel> parseHotelFromDTO(List<HotelDTO> list) {
+        List<Hotel> hotelList = new ArrayList<>();
+        for (HotelDTO hotelDTO:list) {
+            Hotel hotel = new Hotel(hotelDTO.getCode(), hotelDTO.getName(), hotelDTO.getCity(),
+                    hotelDTO.getRoomType().toUpperCase(Locale.ROOT), hotelDTO.getPrice());
+            hotelList.add(hotel);
+        }
+        return hotelList;
+    }
+
+    private List<Availability> parseAvailabilityFromDTO(List<HotelDTO> list) {
+        List<Availability> availabilities = new ArrayList<>();
+        for (HotelDTO hotelDTO:list) {
+            Availability availability = new Availability();
+            availability.setAvailable(!hotelDTO.isBooked());
+            availability.setAvailableSince(hotelDTO.getAvailableSince());
+            availability.setAvailableUntil(hotelDTO.getAvailableUntil());
+            availability.setCode(hotelDTO.getCode());
+            availabilities.add(availability);
+        }
+        return availabilities;
+    }
+
+    private List<HotelDTO> parseFromEntities() {
+        List<HotelDTO> hotelList = new ArrayList<>();
+        for (Hotel hotel:hotels) {
+            List<Availability> availabilitiesOfHotel = getAvailabilitiesByCode(hotel.getCode());
+            if(availabilitiesOfHotel.size()==0){
+                List<Availability> availabilities = this.availabilities;
+                HotelDTO newHotelDto = new HotelDTO(hotel.getCode(), hotel.getName(), hotel.getCity(),
+                        hotel.getRoomType().toUpperCase(Locale.ROOT), false, new Date(0), new Date(0),
+                        hotel.getPrice());
+                hotelList.add(newHotelDto);
+            }
+            for (int i = 0; i < availabilitiesOfHotel.size(); i++) {
+                HotelDTO newHotelDto = new HotelDTO(hotel.getCode(), hotel.getName(), hotel.getCity(),
+                        hotel.getRoomType().toUpperCase(Locale.ROOT), !availabilitiesOfHotel.get(i).getAvailable(),
+                        availabilitiesOfHotel.get(i).getAvailableSince(),
+                        availabilitiesOfHotel.get(i).getAvailableUntil(), hotel.getPrice());
+                hotelList.add(newHotelDto);
+            }
+        }
+        return hotelList;
+    }
+
+    private List<Availability> getAvailabilitiesByCode(String code){
+        List<Availability> list = new ArrayList<>();
+        for (Availability availability:availabilities) {
+            if(availability.getCode().equals(code)){
+                list.add(availability);
+            }
+        }
+        return list;
     }
 
     private List<HotelDTO> parseFromJson(List<HotelJSONDTO> list) {
@@ -68,15 +128,15 @@ public class JsonHotelRepository implements IHotelRepository {
     }
 
     @Override
-    public List<HotelDTO> getAll() {
+    public List<HotelDTO> getAllDTO() {
         loadInitialHotels();
-        return hotels;
+        return parseFromEntities();
     }
 
     @Override
-    public void add(HotelDTO hotel) {
+    public void add(Availability newAvailability) {
         loadInitialHotels();
-        hotels.add(hotel);
+        availabilities.add(newAvailability);
     }
 }
 
