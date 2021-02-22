@@ -26,7 +26,7 @@ public class JsonHotelRepository implements IHotelRepository {
     private final static String db = "hotels.json";
     private static List<HotelDTO> hotels;
 
-    private List<HotelJSONDTO> loadArticlesFromFile() {
+    private List<HotelJSONDTO> loadFromFile() {
         File file = null;
         try {
             file = ResourceUtils.getFile("classpath:"+db);
@@ -46,7 +46,7 @@ public class JsonHotelRepository implements IHotelRepository {
 
     private void loadInitialArticles(){
         if (hotels==null){
-            hotels = parseFromJson(loadArticlesFromFile());
+            hotels = parseFromJson(loadFromFile());
         }
     }
 

@@ -21,6 +21,5 @@ public class Booked extends HotelFilter {
     @Override
     public void setValue(String value){
         booked = Boolean.parseBoolean(value);
-        boolean a = booked;
     }
 }

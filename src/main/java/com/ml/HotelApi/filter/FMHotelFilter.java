@@ -1,5 +1,6 @@
 package com.ml.HotelApi.filter;
 
+import com.ml.HotelApi.exception.implementation.FilterNotFoundException;
 import com.ml.HotelApi.filter.concret.*;
 
 import java.util.ArrayList;
@@ -25,17 +26,11 @@ public class FMHotelFilter {
     private static HotelFilter getConcretFilter(String filter, String value) {
         for (HotelFilter concretFilter:getAllFilters()) {
             if(concretFilter.matchFilterName(filter)) {
-                try {
-                    concretFilter.setValue(value);
-                    return concretFilter;
-                } catch (Exception e){
-                    String message = "Tipo ingresado para el filtro "+concretFilter.getFilterName() +" no es valido.";
-                    //throw new WrongCastFilterException(message, e);
-                }
+                concretFilter.setValue(value);
+                return concretFilter;
             }
         }
-        return null;
-        //throw new FilterNotFoundException("Filtro [" + filter + "] no reconocido.", new Exception());
+        throw new FilterNotFoundException("Filtro [" + filter + "] no reconocido.", new Exception());
     }
 
     private static List<HotelFilter> getAllFilters(){
